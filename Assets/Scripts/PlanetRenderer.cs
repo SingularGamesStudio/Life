@@ -6,15 +6,11 @@ using UnityEngine;
 public class PlanetRenderer : MonoBehaviour
 {
     public Planet What;
-    public List<GameObject> Tracking;
-    public int VisionRange;
-    public int CellSize;// must be a big enough power of 2, more than VisionRange*2
+    public int CellSize;
 	private const int RenderBatchSize = 1023;
     private Vector3 RendererShift = new Vector3(100, 100, 100);
 
 	public List<RenderArea> Cells = new List<RenderArea>();
-    public int TicksPerClear = 30;
-    private int Ticks = 0;
 
     private List<Tree> DelayedDraw = new List<Tree>();
 
@@ -52,13 +48,33 @@ public class PlanetRenderer : MonoBehaviour
         }
     }
     Mesh BasicPlane;
-    private void Awake() {
-        for(int i = 0; i<Data.Main.Textures.Count; i++) {
-            Matrices.Add(new List<List<Matrix4x4>>());
-            ShaderCuts.Add(new List<List<Vector4>>());
-            ToBeRendered.Add(false);
-        }
-		BasicPlane = Data.Main.EmptySprite.GetComponent<MeshFilter>().mesh;
+    public void Init()
+    {
+		for (int i = 0; i < Data.Main.Textures.Count; i++) {
+			Matrices.Add(new List<List<Matrix4x4>>());
+			ShaderCuts.Add(new List<List<Vector4>>());
+			ToBeRendered.Add(false);
+		}
+		BasicPlane = Data.Main.EmptySprite.GetComponent<MeshFilter>().sharedMesh;
+		//update viewed area
+		
+		for (int dx = -Camera.main.pixelWidth/2; dx < Camera.main.pixelWidth / 2 + CellSize; dx += CellSize) {
+			for (int dy = -Camera.main.pixelHeight / 2; dy < Camera.main.pixelHeight / 2 + CellSize; dy += CellSize) {
+				Vector2 d = new Vector2(dx, dy);
+				Vector2 Point = Utils.TransformPos((Vector2)Camera.main.transform.position, What.transform, What.Size) + d;
+				bool ok = false;
+				foreach (RenderArea Square in Cells) {
+					if (Utils.PointInSquare(Square.Pos, Square.Size, Point)) {
+						ok = true;
+						break;
+					}
+				}
+				if (!ok) {
+					Vector2Int ToSpawn = new Vector2Int((int)Mathf.Floor(Point.x / CellSize) * CellSize, (int)Mathf.Floor(Point.y / CellSize) * CellSize);
+					Cells.Add(new RenderArea(ToSpawn, CellSize, this));
+				}
+			}
+		}
 	}
 
     private void AddToRenderQueue(Tree Square) {
@@ -80,9 +96,12 @@ public class PlanetRenderer : MonoBehaviour
         tf.SetTRS((Vector3)Utils.InverseTransformPos(Square.Pos + new Vector2(Square.Size / 2f, Square.Size / 2f), What.transform, What.Size) + RendererShift, Quaternion.Euler(90f, 90f, -90f), new Vector3(Square.Size / 1000f, Square.Size / 1000f, Square.Size / 1000f));
         Matrices[id][Matrices[id].Count - 1].Add(tf);
     }
-    
+    int started = -1;//for some reason, cameras do not start recording until third FixedUpdate
     private void FixedUpdate() {
-        Ticks++;
+        if (started<1) {
+            started++;
+            DrawRecursive(What.Root);
+        }
         foreach(Tree Square in DelayedDraw) {
             if (!Square.finishedRender) {
                 Square.finishedRender = true;
@@ -92,7 +111,7 @@ public class PlanetRenderer : MonoBehaviour
                     Tuple<Vector2, Vector2> Box = Utils.SquaresIntersect(Square.Pos, Square.Size, Cell.Pos, Cell.Size);
                     if (Box == null) continue;
                     AddToRenderQueue(Square);
-                    break;//all render areas capture simultaneously, so it is never needed to render twice
+                    break;
                 }
             }
         }
@@ -102,54 +121,12 @@ public class PlanetRenderer : MonoBehaviour
         }
         DelayedDraw.Clear();
         Render();
-        
-        //update viewed area
-        List<RenderArea> added = new List<RenderArea>();
-        foreach (GameObject g in Tracking) {//TODO: poor performance, when renderareas are created
-            for (int dx = -VisionRange; dx < VisionRange + CellSize; dx += CellSize) {
-                for (int dy = -VisionRange; dy < VisionRange + CellSize; dy += CellSize) {
-                    Vector2 d = new Vector2(dx, dy);
-                    Vector2 Point = Utils.TransformPos((Vector2)g.transform.position, What.transform, What.Size) + d;
-                    bool ok = false;
-                    foreach (RenderArea Square in Cells) {
-                        if (Utils.PointInSquare(Square.Pos, Square.Size, Point)) {
-                            ok = true;
-                            break;
-                        }
-                    }
-                    if (!ok) {
-                        Vector2Int ToSpawn = new Vector2Int((int)Mathf.Floor(Point.x / CellSize) * CellSize, (int)Mathf.Floor(Point.y / CellSize) * CellSize);
-                        Cells.Add(new RenderArea(ToSpawn, CellSize, this));
-                        added.Add(Cells[Cells.Count - 1]);
-                    }
-                }
-            }
-        }
-        if (added.Count>0) {
-            DrawRecursive(What.Root, added);//TODO:optimize
-        }
-        
-        if(Ticks%TicksPerClear==0) {
-			List<RenderArea> newCells = new List<RenderArea>();
-			foreach (RenderArea area in Cells) {
-                bool needed = false;
-                foreach(GameObject g in Tracking) {
-                    if(Utils.Distance(Utils.TransformPos((Vector2)g.transform.position, What.transform, What.Size), area.Pos)<(VisionRange+CellSize)*1.5f) { needed = true; break; }
-                }
-                if(needed) {
-                    newCells.Add(area);
-                } else {
-                    area.Destroy();
-                }
-            }
-            Cells = newCells;
-        }
 	}
     
     private void Render() {
         foreach (int id in DrawOrder) {
             for (int id2 = 0; id2 < ShaderCuts[id].Count; id2++) {
-                ToBeRendered[id] = false;
+				ToBeRendered[id] = false;
                 MaterialPropertyBlock block = new MaterialPropertyBlock();
                 block.SetVectorArray("_Rect", ShaderCuts[id][id2]);
                 Graphics.DrawMeshInstanced(BasicPlane, 0, Data.Main.Materials[id], Matrices[id][id2], block, UnityEngine.Rendering.ShadowCastingMode.Off, false);
@@ -180,7 +157,6 @@ public class PlanetRenderer : MonoBehaviour
     /// Delayed until start of the next frame
     /// </summary>
     /// <param name="Square"></param>
-    /// <param name="areas"></param>
     public void Draw(Tree Square) {
         if(!Square.inRenderQueue)
             DelayedDraw.Add(Square);
@@ -191,21 +167,16 @@ public class PlanetRenderer : MonoBehaviour
     /// Draws Instantly, could affect performance
     /// </summary>
     /// <param name="Square"></param>
-    /// <param name="areas"></param>
-    private void DrawRecursive(Tree Square, List<RenderArea> areas) {
-        foreach (RenderArea Cell in areas) {
-            Tuple<Vector2, Vector2> Box = Utils.SquaresIntersect(Square.Pos, Square.Size, Cell.Pos, Cell.Size);
-            if (Box == null) continue;
-            if (Square.Color != null) {
-                AddToRenderQueue(Square);
-                return;
+    private void DrawRecursive(Tree Square) {
+        if (Square.Color != null) {
+            AddToRenderQueue(Square);
+            return;
+        }
+        else {
+            foreach (Tree Child in Square.Children) {
+                DrawRecursive(Child);
             }
-            else {
-                foreach (Tree Child in Square.Children) {
-                    DrawRecursive(Child, areas);
-                }
-                return;
-            }
+            return;
         }
     }
 }

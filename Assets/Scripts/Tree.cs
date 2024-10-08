@@ -101,7 +101,7 @@ public class Tree {
         }
 		Color = NewColor;
         Children = new Tree[4];
-		Root.Renderer.Draw(this);//TODO
+		Root.Renderer.Draw(this);
     }
 	/// <summary>
 	/// Fill square with a color (deletes children, if any)
