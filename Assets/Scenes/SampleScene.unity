@@ -123,6 +123,85 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &37465095
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 37465096}
+  - component: {fileID: 37465098}
+  - component: {fileID: 37465097}
+  m_Layer: 5
+  m_Name: Text
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &37465096
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 37465095}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1546344493}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -275.25, y: -200.9887}
+  m_SizeDelta: {x: 550.5, y: 66.0226}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &37465097
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 37465095}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.9056604, g: 0.06407974, b: 0.06407974, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_FontSize: 32
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 0
+    m_MaxSize: 40
+    m_Alignment: 0
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: TPS
+--- !u!222 &37465098
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 37465095}
+  m_CullTransparentMesh: 1
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -162,17 +241,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d141fb898f383841b2c0c00d3098ac6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxSpriteSize: 0
-  Textures:
-  - {fileID: 2800000, guid: f034a28b74bb2354d85472641e2c1657, type: 3}
-  - {fileID: 2800000, guid: 5ae0443fa31f1a24d8e1442743cc4ea9, type: 3}
   Materials:
-  - {fileID: 2100000, guid: 5b59006ef939a9447844738cd0e4e862, type: 2}
   - {fileID: 2100000, guid: bc6dc0192ed3d69459c4b81601b3c3a3, type: 2}
+  - {fileID: 2100000, guid: 5b59006ef939a9447844738cd0e4e862, type: 2}
   PlanetRenderer: {fileID: 7539793936208114131, guid: c5a0d8c0ec9e6b24baa53fe638421eec, type: 3}
   CameraRenderer: {fileID: 910146596427575832, guid: e982b11be8411ac4084c056b684fd1a1, type: 3}
   EmptySprite: {fileID: 7810695240424358511, guid: 91a57b4ca873dc04ea3a7fcbfe005719, type: 3}
-  MinBiomeSize: 100000
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -200,7 +274,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 4.8300414
+  orthographic size: 2
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -386,7 +460,8 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
-  m_Children: []
+  m_Children:
+  - {fileID: 37465096}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -426,12 +501,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d3240dc3c096964b84b17256836e0b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Size: 1024
-  DebugMode: 0
+  TPSMeter: {fileID: 37465097}
+  Size: 512
   Renderer: {fileID: 2106544243}
-  BiomeByPos: 
-  PlanetRadius: 300
   seed: 0
+  UpdateTime: 0.01
 --- !u!212 &2106544241
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -511,8 +585,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   What: {fileID: 2106544240}
-  Tracking:
-  - {fileID: 0}
-  VisionRange: 1000
   CellSize: 256
-  TicksPerClear: 30

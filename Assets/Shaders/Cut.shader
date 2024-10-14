@@ -37,7 +37,7 @@ Shader "Custom/Cut"
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 float4 myRect = UNITY_ACCESS_INSTANCED_PROP(Inst, _Rect);
-                o.uv = (v.uv*myRect.z + myRect.xy) / 16.0;
+                o.uv = (v.uv*myRect.z + myRect.xy) / 128.0;
                 //o.uv = v.uv;
                 return o;
             }

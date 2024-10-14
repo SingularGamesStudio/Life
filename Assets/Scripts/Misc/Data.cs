@@ -5,7 +5,6 @@ using UnityEngine;
 public class Data : MonoBehaviour
 {
     public static Data Main;
-    public List<Texture2D> Textures;
     public List<Material> Materials;
     public GameObject PlanetRenderer;
     public GameObject CameraRenderer;

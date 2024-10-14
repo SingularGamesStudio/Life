@@ -47,7 +47,7 @@ public class Tree {
     /// <summary>
     /// creates children in the tree and propagates the color to them
     /// </summary>
-	private void InitChildren(bool render = true) {
+	public void InitChildren(bool render = true) {
         if (Color == null) {
             Debug.LogError("Color not defined");
             return;
@@ -94,7 +94,7 @@ public class Tree {
     /// <summary>
     /// Fill square with a color (deletes children, if any)
     /// </summary>
-    private void Update(PixelState NewColor) {
+    public void Update(PixelState NewColor) {
         if (NewColor == null) {
             Debug.LogError("Color not defined");
             return;

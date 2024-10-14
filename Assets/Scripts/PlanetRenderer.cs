@@ -50,7 +50,7 @@ public class PlanetRenderer : MonoBehaviour
     Mesh BasicPlane;
     public void Init()
     {
-		for (int i = 0; i < Data.Main.Textures.Count; i++) {
+		for (int i = 0; i < Data.Main.Materials.Count; i++) {
 			Matrices.Add(new List<List<Matrix4x4>>());
 			ShaderCuts.Add(new List<List<Vector4>>());
 			ToBeRendered.Add(false);
@@ -137,21 +137,6 @@ public class PlanetRenderer : MonoBehaviour
         DrawOrder.Clear();
     }
     
-    Tree LastRes = null;
-    public PixelState GetPixel(int x, int y) {
-        
-        Vector2 Pos = new Vector2(x, y);
-        if (LastRes == null) {
-            LastRes = What.Root.Locate(Pos);
-            return LastRes.Color;
-        } else {
-            LastRes = LastRes.LocateUp(Pos);
-            return LastRes.Color;
-        }
-    }
-    public PixelState GetPixel(Vector2Int Pos) {
-        return What.Root.Locate(Pos).Color;
-    }
     /// <summary>
     /// Draws a node of a tree (if the node is not a leaf, does nothing)
     /// Delayed until start of the next frame
