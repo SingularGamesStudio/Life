@@ -131,11 +131,14 @@ public class Game: MonoBehaviour {
 					cnt.Count(prevLine[j - 1]);
 					prevLine[j - 1] = prev;
 				}
+				cnt.Count(prev);
 				prev = field[i, j];
 				if (field[i, j] == 0 && cnt.Sum() == 3) {
 					SetPixel(new Vector2Int(i, j), cnt.Max());
 				} else if (field[i, j] != 0 && cnt.Sum() != 2 && cnt.Sum() != 3) {
 					SetPixel(new Vector2Int(i, j), 0);
+				} else if (field[i, j] != 0 && cnt.Max() != field[i,j]) {
+					SetPixel(new Vector2Int(i, j), cnt.Max());
 				}
 			}
 		}

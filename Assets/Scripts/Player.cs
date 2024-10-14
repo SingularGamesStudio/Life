@@ -50,7 +50,7 @@ public class Player : MonoBehaviour
 
     public void TakeDamage()
     {
-        points -= 1000;
+        points -= 5000;
         hp--;
         if (hp==0) {
             hp = hpMax;
