@@ -62,9 +62,24 @@ public class PlayerController : MonoBehaviour
 			player2.move = move;
 		}
 		Camera.main.orthographicSize = Camera.main.orthographicSize * (1f - Input.mouseScrollDelta.y*0.1f);
-		
-		if(Input.GetKeyDown(KeyCode.Escape)) {
+
+		if (player1.game.running==0) {
+			if (Input.GetMouseButton(0)) {
+				Vector2 pos = Utils.TransformPos(Camera.main.ScreenToWorldPoint(Input.mousePosition), player1.game.transform, player1.game.Size);
+				player1.game.SetPixel(new Vector2Int((int)pos.x, (int)pos.y), 1);
+			}
+			if (Input.GetMouseButton(1)) {
+				Vector2 pos = Utils.TransformPos(Camera.main.ScreenToWorldPoint(Input.mousePosition), player1.game.transform, player1.game.Size);
+				player1.game.SetPixel(new Vector2Int((int)pos.x, (int)pos.y), 2);
+			}
+		}
+
+
+		if (Input.GetKeyDown(KeyCode.Escape)) {
 			SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+		}
+		if (Input.GetKeyDown(KeyCode.Space) && player1.game.running==0) {
+			player1.game.running = 1;
 		}
 	}
 }

@@ -98,8 +98,6 @@ public class GameRenderer : MonoBehaviour
     public Color[] PlayerColors;
 
     public GameObject[] Win;
-
-    bool finished = false;
 	void DrawHUD(int player)
     {
         SUPERMeters[player].SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, ((RectTransform)SUPERMeters[player].parent).rect.height* (float)What.players[player].SUPER / (float)Data.Main.SUPERmax);
@@ -115,7 +113,7 @@ public class GameRenderer : MonoBehaviour
 
 		if(What.players[player].points >= Data.Main.winCon) {
             Win[player].SetActive(true);
-            finished= true;
+            What.running = 2;
         }
 	}
 
@@ -140,9 +138,6 @@ public class GameRenderer : MonoBehaviour
     }
     int started = -1;//for some reason, cameras do not start recording until third FixedUpdate
     private void FixedUpdate() {
-        if (finished) {
-            return;
-        }
         if (started<1) {
             started++;
             DrawRecursive(What.Root);

@@ -20,12 +20,6 @@ public static class Utils
 		}
         return points;
 	}
-	public static Vector2 TransformPos(Vector3 WorldPos, SpriteRenderer Sprite) {
-        Vector2 Pos = Sprite.transform.InverseTransformPoint(WorldPos);
-        Pos *= 100;
-        Pos+=new Vector2(Sprite.sprite.texture.width, Sprite.sprite.texture.height)/2;
-        return Pos;
-    }
     public static Vector2 TransformPos(Vector3 WorldPos, Transform SpriteCenter, int SpriteSize) {
         Vector2 Pos = SpriteCenter.InverseTransformPoint(WorldPos);
         Pos *= 100;

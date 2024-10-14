@@ -19,6 +19,9 @@ public class Game: MonoBehaviour {
 	System.Random rnd = new System.Random(42);
 	public bool PvP;
 	public Player[] players;
+
+	public int running = 0;
+
 	void Start() {
 		Root = new Tree(Size, this, new PixelState(0, true));
 		Renderer.Init();
@@ -34,6 +37,9 @@ public class Game: MonoBehaviour {
 		players[1].hp = 3;
 	}
 	private void Update() {
+		if (running!=1) {
+			return;
+		}
 		curTime += Time.deltaTime;
 		if (curTime < UpdateTime) {
 			return;
@@ -171,13 +177,17 @@ public class Game: MonoBehaviour {
 
 	public void FreezeSpell(int player)
 	{
-		players[player].SUPER -= Data.Main.FreezeCost;
-		players[-player + 1].frozen = Data.Main.FreezeDuration;
+		if (running == 1) {
+			players[player].SUPER -= Data.Main.FreezeCost;
+			players[-player + 1].frozen = Data.Main.FreezeDuration;
+		}
 	}
 
 	public void ExplodeSpell(int player)
 	{
-		players[player].SUPER -= Data.Main.ExplodeCost;
-		PlayerDraw(player, Data.Main.ExplodeSize, 1.5f);
+		if (running == 1) {
+			players[player].SUPER -= Data.Main.ExplodeCost;
+			PlayerDraw(player, Data.Main.ExplodeSize, 1.5f);
+		}
 	}
 }
