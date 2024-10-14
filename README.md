@@ -1,1 +1,1 @@
-# [Life на itch](https://eeestrelok.itch.io/life)
+# [Ссылка на itch](https://eeestrelok.itch.io/life)
