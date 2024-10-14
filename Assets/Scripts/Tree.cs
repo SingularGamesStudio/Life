@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class Tree {
     //structure
     public Tree Parent = null;
-    public Planet Root = null;
+    public Game Root = null;
 	public Tree[] Children = new Tree[4];//numbered as basic quarters of the plane (right-up, left-up, left-down, right-down)
     //shape
 	public Vector2Int Pos = new Vector2Int(0, 0);
@@ -29,7 +29,7 @@ public class Tree {
     /// <summary>
     /// Initialize root of a tree
     /// </summary>
-    public Tree(int Size, Planet Root, PixelState Color, bool render = true) {
+    public Tree(int Size, Game Root, PixelState Color, bool render = true) {
         this.Parent = null;
         this.Pos = new Vector2Int(0, 0);
         this.Size = Size;

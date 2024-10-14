@@ -2,10 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class PlanetRenderer : MonoBehaviour
+public class GameRenderer : MonoBehaviour
 {
-    public Planet What;
+    public Game What;
     public int CellSize;
 	private const int RenderBatchSize = 1023;
     private Vector3 RendererShift = new Vector3(100, 100, 100);
@@ -26,7 +27,7 @@ public class PlanetRenderer : MonoBehaviour
         public Vector2Int Pos;
         private MeshRenderer Instance;
         public int Size;
-        public RenderArea(Vector2Int Pos, int Size, PlanetRenderer Renderer) {
+        public RenderArea(Vector2Int Pos, int Size, GameRenderer Renderer) {
             this.Pos = Pos;
             this.Size = Size;
             Rec = Instantiate(Data.Main.CameraRenderer).GetComponent<Camera>();
@@ -48,6 +49,10 @@ public class PlanetRenderer : MonoBehaviour
         }
     }
     Mesh BasicPlane;
+
+    public List<GameObject> playerMarkers = new List<GameObject>();
+
+
     public void Init()
     {
 		for (int i = 0; i < Data.Main.Materials.Count; i++) {
@@ -56,8 +61,11 @@ public class PlanetRenderer : MonoBehaviour
 			ToBeRendered.Add(false);
 		}
 		BasicPlane = Data.Main.EmptySprite.GetComponent<MeshFilter>().sharedMesh;
+        playerMarkers.Add(Instantiate(Data.Main.PlayerMarker));
+		playerMarkers.Add(Instantiate(Data.Main.PlayerMarker));
+        playerMarkers[1].transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().color= Color.blue;
 		//update viewed area
-		
+
 		for (int dx = -Camera.main.pixelWidth/2; dx < Camera.main.pixelWidth / 2 + CellSize; dx += CellSize) {
 			for (int dy = -Camera.main.pixelHeight / 2; dy < Camera.main.pixelHeight / 2 + CellSize; dy += CellSize) {
 				Vector2 d = new Vector2(dx, dy);
@@ -75,6 +83,40 @@ public class PlanetRenderer : MonoBehaviour
 				}
 			}
 		}
+	}
+
+
+    public RectTransform[] SUPERMeters;
+	public RectTransform[] ScoreMeters;
+	[System.Serializable]
+    public class HPmeter
+    {
+        public Image[] hearts;
+    }
+    public HPmeter[] hp;
+
+    public Color[] PlayerColors;
+
+    public GameObject[] Win;
+
+    bool finished = false;
+	void DrawHUD(int player)
+    {
+        SUPERMeters[player].SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, ((RectTransform)SUPERMeters[player].parent).rect.height* (float)What.players[player].SUPER / (float)Data.Main.SUPERmax);
+		ScoreMeters[player].SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, ((RectTransform)ScoreMeters[player].parent).rect.width * (float)What.players[player].points / (float)Data.Main.winCon);
+
+		for (int i = 0; i<3;i ++) {
+            if (What.players[player].hp>=i+1) {
+                hp[player].hearts[i].color = PlayerColors[player];
+            } else {
+                hp[player].hearts[i].color = Color.white;
+			}
+        }
+
+		if(What.players[player].points >= Data.Main.winCon) {
+            Win[player].SetActive(true);
+            finished= true;
+        }
 	}
 
     private void AddToRenderQueue(Tree Square) {
@@ -98,6 +140,9 @@ public class PlanetRenderer : MonoBehaviour
     }
     int started = -1;//for some reason, cameras do not start recording until third FixedUpdate
     private void FixedUpdate() {
+        if (finished) {
+            return;
+        }
         if (started<1) {
             started++;
             DrawRecursive(What.Root);
@@ -121,6 +166,11 @@ public class PlanetRenderer : MonoBehaviour
         }
         DelayedDraw.Clear();
         Render();
+
+        for (int i = 0; i<What.players.Length; i++) {
+            playerMarkers[i].transform.position = Utils.InverseTransformPos(What.players[i].pos, transform, What.Size);
+            DrawHUD(i);
+        }
 	}
     
     private void Render() {
