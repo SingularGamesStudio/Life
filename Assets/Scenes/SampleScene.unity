@@ -310,6 +310,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94e9f2c82f76cab4796a94cd68527640, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ID: 1
   game: {fileID: 2106544240}
   pos: {x: 0, y: 0}
   move: {x: 0, y: 0}
@@ -538,7 +539,7 @@ MonoBehaviour:
   ExplodeSize: 30
   DrawChance: 0.2
   InitDrawChance: 0.15
-  SUPERmax: 600
+  SUPERmax: 200
   winCon: 150000
 --- !u!20 &519420031
 Camera:
@@ -1671,6 +1672,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94e9f2c82f76cab4796a94cd68527640, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ID: 0
   game: {fileID: 2106544240}
   pos: {x: 0, y: 0}
   move: {x: 0, y: 0}

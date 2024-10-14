@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    public int ID;
+
     public Game game;
     public Vector2Int pos;
     [HideInInspector]
@@ -35,11 +37,18 @@ public class Player : MonoBehaviour
             return;
         }
         if (controller == Controller.Bot) {
-            move.x = rnd.Next(100) - 80;
-			move.y = rnd.Next(100) - 80;
-			move.x = (int)Mathf.Sign(move.x);
-			move.y = (int)Mathf.Sign(move.y);
-            return;
+            if (pos.x > game.Size / 2 && pos.y > game.Size / 2) {
+                move.x = rnd.Next(100) - 80;
+                move.y = rnd.Next(100) - 80;
+                move.x = (move.x < 0) ? -1 : 1;
+                move.y = (move.y < 0) ? -1 : 1;
+            } else {
+                move.x = rnd.Next(3) - 1;
+				move.y = rnd.Next(3) - 1;
+			}
+            if (SUPER>=Data.Main.ExplodeCost) {
+                game.ExplodeSpell(ID);
+            }
 		}
         Vector2Int newPos = new Vector2Int(pos.x+move.x, pos.y+move.y);
         if (newPos.x >= 0 && newPos.y >=0 && newPos.x<game.Size && newPos.y<game.Size) { 
